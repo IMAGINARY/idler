@@ -5,4 +5,5 @@ export declare type EventTargetAddRemove = Pick<EventTarget, 'addEventListener' 
 export declare type EventEmitterOnOffOrEventTargetAddRemove = EventEmitterOnOff | EventTargetAddRemove;
 export declare function hasOnOff(obj: EventEmitterOnOffOrEventTargetAddRemove): obj is EventEmitterOnOff;
 export declare function isIterable<X>(i: X | Iterable<X>): i is Iterable<X>;
+export declare type Callback = () => void;
 //# sourceMappingURL=util.d.ts.map

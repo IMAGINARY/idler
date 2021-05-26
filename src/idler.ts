@@ -2,9 +2,10 @@
 import { performance } from 'universal-perf-hooks';
 import { EventEmitter } from 'events';
 
-import IdleTimer from './idle-timer';
+import { IdleTimeout } from './idle-timeout';
+import { IdleInterval } from './idle-interval';
 import { Interrupter } from './interrupters/interrupter';
-import { isIterable } from './util';
+import { Callback } from './util';
 
 function now(): number {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
@@ -14,66 +15,91 @@ function now(): number {
 export default class Idler extends EventEmitter {
   protected lastId: number;
 
-  protected timers: Map<number, IdleTimer>;
+  protected timers: Map<number, IdleTimeout>;
 
   protected lastEventTimestampMs: number;
 
   protected readonly interruptHandler: () => void;
 
-  constructor(interrupter: Interrupter);
-  constructor(interrupters: Iterable<Interrupter>);
-  constructor(interrupters?: Interrupter | Iterable<Interrupter>) {
+  constructor(...interrupters: Interrupter[]) {
     super();
     this.lastId = 0;
-    this.timers = new Map<number, IdleTimer>();
+    this.timers = new Map<number, IdleTimeout>();
     this.lastEventTimestampMs = now();
     this.interruptHandler = this.interrupt.bind(this);
 
-    if (typeof interrupters !== 'undefined') {
-      if (isIterable(interrupters)) {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const interrupter of interrupters) {
-          this.registerInterrupter(interrupter);
-        }
-      } else {
-        this.registerInterrupter(interrupters);
-      }
-    }
-  }
-
-  setTimeout(
-    func: (...args: unknown[]) => void,
-    timeoutDelay: number,
-    ...args: unknown[]
-  ): number {
-    this.lastId += 1;
-    const id = this.lastId;
-    this.timers.set(
-      id,
-      new IdleTimer(this, false, func, timeoutDelay, ...args)
+    interrupters.forEach((interrupter) =>
+      this.registerInterrupter(interrupter)
     );
-    return id;
   }
 
-  setInterval(
-    func: (...args: unknown[]) => void,
-    timeoutDelay: number,
-    ...args: unknown[]
+  addCallback(beginCb: Callback, delay: number): number;
+  addCallback(beginCb: Callback, delay: number, endCb: Callback): number;
+  addCallback(
+    beginCb: Callback,
+    delay: number,
+    intervalCb: Callback,
+    interval: number,
+    endCb: Callback
+  ): number;
+  addCallback(
+    beginCb: Callback,
+    delay: number,
+    endOrIntervalCb?: Callback,
+    interval?: number,
+    endCb?: Callback
   ): number {
+    if (typeof endOrIntervalCb === 'undefined') {
+      return this.addCallback2(beginCb, delay);
+    }
+    if (typeof interval === 'undefined' || typeof endCb === 'undefined') {
+      return this.addCallback3(beginCb, delay, endOrIntervalCb);
+    }
+    return this.addCallback5(beginCb, delay, endOrIntervalCb, interval, endCb);
+  }
+
+  protected addCallback2(beginCb: Callback, delay: number): number {
+    return this.addCallback3(beginCb, delay, () => {});
+  }
+
+  protected addCallback3(
+    beginCb: Callback,
+    delay: number,
+    endCb: Callback
+  ): number {
+    const idleTimeout = new IdleTimeout(this, beginCb, delay, endCb);
+    return this.addIdleTimeout(idleTimeout);
+  }
+
+  addCallback5(
+    beginCb: Callback,
+    delay: number,
+    intervalCb: Callback,
+    interval: number,
+    endCb: Callback
+  ): number {
+    const idleInterval = new IdleInterval(
+      this,
+      beginCb,
+      delay,
+      intervalCb,
+      interval,
+      endCb
+    );
+    return this.addIdleTimeout(idleInterval);
+  }
+
+  protected addIdleTimeout(idleTimeout: IdleTimeout): number {
     this.lastId += 1;
     const id = this.lastId;
-    this.timers.set(id, new IdleTimer(this, true, func, timeoutDelay, ...args));
+    this.timers.set(id, idleTimeout);
     return id;
   }
 
-  clearTimeout(id: number): void {
+  removeCallback(id: number): void {
     const timer = this.timers.get(id);
     if (typeof timer !== 'undefined') timer.clear();
     this.timers.delete(id);
-  }
-
-  clearInterval(id: number): void {
-    this.clearTimeout(id);
   }
 
   clear(): void {

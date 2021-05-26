@@ -1,18 +1,23 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-import IdleTimer from './idle-timer';
+import { IdleTimeout } from './idle-timeout';
 import { Interrupter } from './interrupters/interrupter';
+import { Callback } from './util';
 export default class Idler extends EventEmitter {
     protected lastId: number;
-    protected timers: Map<number, IdleTimer>;
+    protected timers: Map<number, IdleTimeout>;
     protected lastEventTimestampMs: number;
     protected readonly interruptHandler: () => void;
     constructor(interrupter: Interrupter);
     constructor(interrupters: Iterable<Interrupter>);
-    setTimeout(func: (...args: unknown[]) => void, timeoutDelay: number, ...args: unknown[]): number;
-    setInterval(func: (...args: unknown[]) => void, timeoutDelay: number, ...args: unknown[]): number;
+    addCallback(beginCb: Callback, delay: number): number;
+    addCallback(beginCb: Callback, delay: number, endCb: Callback): number;
+    addCallback(beginCb: Callback, delay: number, intervalCb: Callback, interval: number, endCb: Callback): number;
+    protected addCallback2(beginCb: Callback, delay: number): number;
+    protected addCallback3(beginCb: Callback, delay: number, endCb: Callback): number;
+    addCallback5(beginCb: Callback, delay: number, intervalCb: Callback, interval: number, endCb: Callback): number;
+    protected addIdleTimeout(idleTimeout: IdleTimeout): number;
     clearTimeout(id: number): void;
-    clearInterval(id: number): void;
     clear(): void;
     interrupt(): void;
     /**

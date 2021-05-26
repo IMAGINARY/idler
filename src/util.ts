@@ -25,3 +25,5 @@ export function isIterable<X>(i: X | Iterable<X>): i is Iterable<X> {
     typeof (i as Iterable<X>)[Symbol.iterator] === 'function'
   );
 }
+
+export type Callback = () => void;
