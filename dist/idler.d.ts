@@ -1,11 +1,14 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 import IdleTimer from './idle-timer';
+import { Interrupter } from './interrupters/interrupter';
 export default class Idler extends EventEmitter {
     protected lastId: number;
     protected timers: Map<number, IdleTimer>;
     protected lastEventTimestampMs: number;
-    constructor();
+    protected readonly interruptHandler: () => void;
+    constructor(interrupter: Interrupter);
+    constructor(interrupters: Iterable<Interrupter>);
     setTimeout(func: (...args: unknown[]) => void, timeoutDelay: number, ...args: unknown[]): number;
     setInterval(func: (...args: unknown[]) => void, timeoutDelay: number, ...args: unknown[]): number;
     clearTimeout(id: number): void;
@@ -17,6 +20,8 @@ export default class Idler extends EventEmitter {
      * @returns {number}
      */
     getIdleTime(): number;
+    registerInterrupter(interrupter: Interrupter): this;
+    unregisterInterrupter(interrupter: Interrupter): this;
 }
 export { Idler };
 //# sourceMappingURL=idler.d.ts.map
