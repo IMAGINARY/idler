@@ -12,6 +12,22 @@ function now(): number {
   return performance.now();
 }
 
+type CallbackOptions = {
+  delay: number;
+  onBegin: Callback;
+  onEnd: Callback;
+  interval: number;
+  onInterval: Callback;
+};
+
+const defaultCallbackOptions: CallbackOptions = {
+  delay: 60 * 1000,
+  onBegin: () => {},
+  onEnd: () => {},
+  interval: Number.POSITIVE_INFINITY,
+  onInterval: () => {},
+};
+
 export default class Idler extends EventEmitter {
   protected lastId: number;
 
@@ -33,60 +49,31 @@ export default class Idler extends EventEmitter {
     );
   }
 
-  addCallback(beginCb: Callback, delay: number): number;
-  addCallback(beginCb: Callback, delay: number, endCb: Callback): number;
-  addCallback(
-    beginCb: Callback,
-    delay: number,
-    intervalCb: Callback,
-    interval: number,
-    endCb: Callback
-  ): number;
-  addCallback(
-    beginCb: Callback,
-    delay: number,
-    endOrIntervalCb?: Callback,
-    interval?: number,
-    endCb?: Callback
-  ): number {
-    if (typeof endOrIntervalCb === 'undefined') {
-      return this.addCallback2(beginCb, delay);
+  addCallback(options: Partial<CallbackOptions>): number {
+    if (
+      typeof options.interval !== 'undefined' &&
+      Number.isFinite(options.interval)
+    ) {
+      const { onBegin, delay, onInterval, interval, onEnd } = {
+        ...defaultCallbackOptions,
+        ...options,
+      };
+      const idleInterval = new IdleInterval(
+        this,
+        onBegin,
+        delay,
+        onInterval,
+        interval,
+        onEnd
+      );
+      return this.addIdleTimeout(idleInterval);
     }
-    if (typeof interval === 'undefined' || typeof endCb === 'undefined') {
-      return this.addCallback3(beginCb, delay, endOrIntervalCb);
-    }
-    return this.addCallback5(beginCb, delay, endOrIntervalCb, interval, endCb);
-  }
-
-  protected addCallback2(beginCb: Callback, delay: number): number {
-    return this.addCallback3(beginCb, delay, () => {});
-  }
-
-  protected addCallback3(
-    beginCb: Callback,
-    delay: number,
-    endCb: Callback
-  ): number {
-    const idleTimeout = new IdleTimeout(this, beginCb, delay, endCb);
+    const { onBegin, delay, onEnd } = {
+      ...defaultCallbackOptions,
+      ...options,
+    };
+    const idleTimeout = new IdleTimeout(this, onBegin, delay, onEnd);
     return this.addIdleTimeout(idleTimeout);
-  }
-
-  addCallback5(
-    beginCb: Callback,
-    delay: number,
-    intervalCb: Callback,
-    interval: number,
-    endCb: Callback
-  ): number {
-    const idleInterval = new IdleInterval(
-      this,
-      beginCb,
-      delay,
-      intervalCb,
-      interval,
-      endCb
-    );
-    return this.addIdleTimeout(idleInterval);
   }
 
   protected addIdleTimeout(idleTimeout: IdleTimeout): number {
@@ -131,4 +118,4 @@ export default class Idler extends EventEmitter {
   }
 }
 
-export { Idler };
+export { Idler, CallbackOptions };
