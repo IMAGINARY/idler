@@ -8,8 +8,7 @@ export default class Idler extends EventEmitter {
     protected timers: Map<number, IdleTimeout>;
     protected lastEventTimestampMs: number;
     protected readonly interruptHandler: () => void;
-    constructor(interrupter: Interrupter);
-    constructor(interrupters: Iterable<Interrupter>);
+    constructor(...interrupters: Interrupter[]);
     addCallback(beginCb: Callback, delay: number): number;
     addCallback(beginCb: Callback, delay: number, endCb: Callback): number;
     addCallback(beginCb: Callback, delay: number, intervalCb: Callback, interval: number, endCb: Callback): number;
@@ -17,7 +16,7 @@ export default class Idler extends EventEmitter {
     protected addCallback3(beginCb: Callback, delay: number, endCb: Callback): number;
     addCallback5(beginCb: Callback, delay: number, intervalCb: Callback, interval: number, endCb: Callback): number;
     protected addIdleTimeout(idleTimeout: IdleTimeout): number;
-    clearTimeout(id: number): void;
+    removeCallback(id: number): void;
     clear(): void;
     interrupt(): void;
     /**

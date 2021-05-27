@@ -1,0 +1,1 @@
+{"version":3,"file":"keyboard.d.ts","sourceRoot":"","sources":["../../src/interrupters/keyboard.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,SAAS,CAAC;AAC3C,OAAO,EAAE,uCAAuC,EAAE,MAAM,SAAS,CAAC;AAIlE,MAAM,CAAC,OAAO,OAAO,mBAAoB,SAAQ,gBAAgB;gBAE7D,sBAAsB,GAClB,uCAAuC,GACvC,QAAQ,CAAC,uCAAuC,CAAc;CAIrE;AAED,OAAO,EAAE,mBAAmB,EAAE,CAAC"}
