@@ -1,6 +1,6 @@
 {
   "name": "@imaginary-maths/idler",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Trigger actions when or while a web app is idle.",
   "author": "Christian Stussak <christian.stussak@imaginary.org>",
   "repository": "github:IMAGINARY/idler",
