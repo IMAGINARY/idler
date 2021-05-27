@@ -1,6 +1,6 @@
 # Idler
 
-The library manages the idle state of web apps. Several ways to interrupt the idle state are available and more are
+This library manages the idle state of web apps. Several ways to interrupt the idle state are available and more are
 about to be added. Adding custom interrupters is easy as well.
 
 ## Installation
@@ -146,12 +146,6 @@ Developed by Christian Stussak, IMAGINARY gGmbH.
 
 ## License
 
-### Source code
-
 Copyright 2021 IMAGINARY gGmbH
 
 Licensed under the Apache License, Version 2.0 (see `LICENSE`).
-
-```
-
-```
