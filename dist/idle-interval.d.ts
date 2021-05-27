@@ -11,7 +11,7 @@ export default class IdleInterval extends IdleTimeout {
     protected intervalCb: Callback;
     protected interval: number;
     protected intervalId: ReturnType<typeof setInterval>;
-    constructor(idler: Idler, beginCb: Callback, delay: number, intervalCb: Callback, interval: number, endCb: Callback);
+    constructor(idler: Idler, beginCb: Callback, delay: number, duration: number, intervalCb: Callback, interval: number, endCb: Callback);
     clear(): void;
     protected handleBegin(): void;
     protected handleEnd(): void;

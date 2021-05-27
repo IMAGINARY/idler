@@ -11,10 +11,13 @@ export default class IdleTimeout {
     protected beginCb: Callback;
     protected endCb: Callback;
     protected delay: number;
+    protected duration: number;
     protected timeoutId: ReturnType<typeof setTimeout>;
+    protected durationTimeoutId: ReturnType<typeof setTimeout>;
+    protected endHandler: () => void;
     private initialized;
     private idle;
-    constructor(idler: Idler, beginCb: Callback, delay: number, endCb: Callback);
+    constructor(idler: Idler, beginCb: Callback, delay: number, duration: number, endCb: Callback);
     init(): void;
     isInitialized(): boolean;
     clear(): void;
