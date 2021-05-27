@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 
 import { IdleTimeout } from './idle-timeout';
 import { IdleInterval } from './idle-interval';
+import { IdleAnimation } from './idle-animation';
 import { Interrupter } from './interrupters/interrupter';
 import { Callback } from './util';
 
@@ -18,6 +19,7 @@ type CallbackOptions = {
   onEnd: Callback;
   interval: number;
   onInterval: Callback;
+  onAnimate: FrameRequestCallback;
 };
 
 const defaultCallbackOptions: CallbackOptions = {
@@ -26,6 +28,7 @@ const defaultCallbackOptions: CallbackOptions = {
   onEnd: () => {},
   interval: Number.POSITIVE_INFINITY,
   onInterval: () => {},
+  onAnimate: () => {},
 };
 
 export default class Idler extends EventEmitter {
@@ -50,6 +53,22 @@ export default class Idler extends EventEmitter {
   }
 
   addCallback(options: Partial<CallbackOptions>): number {
+    if (typeof options.onAnimate !== 'undefined') {
+      const { onBegin, delay, onAnimate, onInterval, interval, onEnd } = {
+        ...defaultCallbackOptions,
+        ...options,
+      };
+      const idleAnimation = new IdleAnimation(
+        this,
+        onBegin,
+        delay,
+        onAnimate,
+        onInterval,
+        interval,
+        onEnd
+      );
+      return this.addIdleTimeout(idleAnimation);
+    }
     if (
       typeof options.interval !== 'undefined' &&
       Number.isFinite(options.interval)

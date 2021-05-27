@@ -129,6 +129,7 @@ npm run dev
 
 ## TODOs before reaching v1.0
 
+- [x] Idle animations (via `requestAnimationFrame`)
 - [x] Interrupter for mouse, touch and pointer input
 - [ ] Interrupter for keyboard input
 - [ ] Interrupter for MIDI input
