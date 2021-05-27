@@ -27,12 +27,13 @@ export default class IdleAnimation extends IdleInterval {
     idler: Idler,
     beginCb: Callback,
     delay: number,
+    duration: number,
     animationCb: FrameRequestCallback,
     intervalCb: Callback,
     interval: number,
     endCb: Callback
   ) {
-    super(idler, beginCb, delay, intervalCb, interval, endCb);
+    super(idler, beginCb, delay, duration, intervalCb, interval, endCb);
     this.animationCb = animationCb;
   }
 

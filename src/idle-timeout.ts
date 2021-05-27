@@ -23,18 +23,32 @@ export default class IdleTimeout {
 
   protected delay: number;
 
+  protected duration: number;
+
   protected timeoutId: ReturnType<typeof setTimeout>;
+
+  protected durationTimeoutId: ReturnType<typeof setTimeout>;
+
+  protected endHandler = this.handleEnd.bind(this);
 
   private initialized = false;
 
   private idle = false;
 
-  constructor(idler: Idler, beginCb: Callback, delay: number, endCb: Callback) {
+  constructor(
+    idler: Idler,
+    beginCb: Callback,
+    delay: number,
+    duration: number,
+    endCb: Callback
+  ) {
     this.idler = idler;
     this.beginCb = beginCb;
     this.delay = delay;
+    this.duration = duration;
     this.endCb = typeof endCb === 'undefined' ? () => {} : endCb;
     this.timeoutId = dummyTimeoutId;
+    this.durationTimeoutId = dummyTimeoutId;
     this.init();
   }
 
@@ -79,11 +93,18 @@ export default class IdleTimeout {
 
   protected handleBegin(): void {
     this.idle = true;
+    this.idler.on('interrupted', this.endHandler);
     this.beginCb();
-    this.idler.once('interrupted', () => this.handleEnd());
+    if (Number.isFinite(this.duration) && this.duration >= 0)
+      this.durationTimeoutId = setTimeout(
+        () => this.handleEnd(),
+        this.duration
+      );
   }
 
   protected handleEnd(): void {
+    clearTimeout(this.durationTimeoutId);
+    this.idler.off('interrupted', this.endHandler);
     this.idle = false;
     this.endCb();
     this.testTimeout();

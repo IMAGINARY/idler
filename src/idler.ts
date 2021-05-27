@@ -15,6 +15,7 @@ function now(): number {
 
 type CallbackOptions = {
   delay: number;
+  duration: number;
   onBegin: Callback;
   onEnd: Callback;
   interval: number;
@@ -24,6 +25,7 @@ type CallbackOptions = {
 
 const defaultCallbackOptions: CallbackOptions = {
   delay: 60 * 1000,
+  duration: Number.POSITIVE_INFINITY,
   onBegin: () => {},
   onEnd: () => {},
   interval: Number.POSITIVE_INFINITY,
@@ -54,7 +56,15 @@ export default class Idler extends EventEmitter {
 
   addCallback(options: Partial<CallbackOptions>): number {
     if (typeof options.onAnimate !== 'undefined') {
-      const { onBegin, delay, onAnimate, onInterval, interval, onEnd } = {
+      const {
+        onBegin,
+        delay,
+        duration,
+        onAnimate,
+        onInterval,
+        interval,
+        onEnd,
+      } = {
         ...defaultCallbackOptions,
         ...options,
       };
@@ -62,6 +72,7 @@ export default class Idler extends EventEmitter {
         this,
         onBegin,
         delay,
+        duration,
         onAnimate,
         onInterval,
         interval,
@@ -73,7 +84,7 @@ export default class Idler extends EventEmitter {
       typeof options.interval !== 'undefined' &&
       Number.isFinite(options.interval)
     ) {
-      const { onBegin, delay, onInterval, interval, onEnd } = {
+      const { onBegin, delay, duration, onInterval, interval, onEnd } = {
         ...defaultCallbackOptions,
         ...options,
       };
@@ -81,17 +92,18 @@ export default class Idler extends EventEmitter {
         this,
         onBegin,
         delay,
+        duration,
         onInterval,
         interval,
         onEnd
       );
       return this.addIdleTimeout(idleInterval);
     }
-    const { onBegin, delay, onEnd } = {
+    const { onBegin, delay, duration, onEnd } = {
       ...defaultCallbackOptions,
       ...options,
     };
-    const idleTimeout = new IdleTimeout(this, onBegin, delay, onEnd);
+    const idleTimeout = new IdleTimeout(this, onBegin, delay, duration, onEnd);
     return this.addIdleTimeout(idleTimeout);
   }
 
