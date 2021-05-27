@@ -65,27 +65,19 @@ import { Idler, PointerInterrupter } from 'idler';
 const myIdler = new Idler(new PointerInterrupter());
 
 // Attach callbacks
-const cbId0 = myIdler.addCallback(
-  () => console.log('not interupted for 5s'),
-  5000
-);
-
-const cbId1 = myIdler.addCallback(
-  () => console.log('not interupted for 10s'),
-  10000,
-  () => console.log('interrupted during idle mode')
-);
-
-const cbId2 = myIdler.addCallback(
-  () => console.log('not interupted for 3s'),
-  3000,
-  () => console.log('in idle mode for multiple of 1s'),
-  1000,
-  () => console.log('interrupted during idle mode')
-);
+const callbackOptions = {
+  delay: 5 * 1000, // idle after not being interrupted for 5s
+  duration: 60 * 1000, // not idle anymore after 1min in idle mode
+  onBegin: () => console.log('begin'), // called after 5s without interruption
+  onEnd: () => console.log('begin'), // called after interrupted in idle mode
+  interval: 10 * 1000, // repeat onInterval every 10s in idle mode
+  onInterval: () => console.log('interval'), // called every 10s when in idle mode
+  onAnimate: (ms) => console.log('animate', ms), // animate via requestAnimationFrame while in idle mode
+};
+const cbId = myIdler.addCallback(callbackOptions);
 
 // Detach a callback
-myIdler.removeCallback(cbId0);
+myIdler.removeCallback(cbId);
 ```
 
 ### Creating custom interrupters
