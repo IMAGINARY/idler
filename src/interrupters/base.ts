@@ -12,7 +12,7 @@ export default class InterrupterBase
     this.emitInterruptedHandler = this.emitInterrupted.bind(this);
   }
 
-  emitInterrupted(): void {
+  protected emitInterrupted(): void {
     this.emit('interrupted');
   }
 }

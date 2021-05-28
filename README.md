@@ -83,9 +83,28 @@ myIdler.removeCallback(cbId);
 
 ### Creating custom interrupters
 
-Currently, custom interrupters need to extend `InterrupterBase`. This is likely to change in the future.
+For very simple use cases, you should just call `Idler.interrupt()` whenever idle mode should be interrupted:
 
 ```js
+button.addEventListener('click', () => idler.interrupt());
+```
+
+However, more complex scenarios may demand separation of the code for easier reuse and maintenance. In this case, you should implement your own `Interrupter`, whose interface should look like this:
+
+```typescript
+interface Interrupter {
+  on(eventName: string, listener: Callback): unknown;
+  off(eventName: string, listener: Callback): unknown;
+}
+```
+
+The interrupter needs to call the listeners registered to the `interrupted` event on interruption. That's it.
+
+This library provides `InterrupterBase`, which makes this particularly easy to implement through subclassing:
+
+```js
+import InterrupterBase from 'idler';
+
 class IntervalInterupter extends InterrupterBase {
   constructor() {
     // Interrupt every 60s
@@ -93,6 +112,21 @@ class IntervalInterupter extends InterrupterBase {
   }
 }
 ```
+
+If subclassing isn't appropriate, the `CustomInterrupter` class can be used:
+
+```typescript
+import CustomInterrupter from 'idler';
+
+function onInit(onInterrupted: () => void) {
+  // Interrupt every 60s
+  setInterval(onInterrupted, 60 * 1000);
+}
+
+const customInterrupter = new CustomInterrupter(onInit);
+```
+
+The `onInit` method is called only once during the initialization of `CustomInterrupter`.
 
 ## Compilation
 
@@ -131,7 +165,7 @@ npm run dev
 - [ ] Check behaviour with respect to event bubbling/capture
 - [ ] Event filters for event based interrupters (pointers, MIDI)
 - [ ] Button filters for gamepad interrupter
-- [ ] Custom interrupters without extending `InterrupterBase`
+- [x] Custom interrupters without subclassing
 - [ ] Compatibility with Electron apps (for monitoring several renderer processes from the main process)
 - [ ] Full API doc
 

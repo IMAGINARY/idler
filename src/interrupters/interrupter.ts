@@ -1,7 +1,8 @@
-import { EventEmitter } from 'events';
+import { Callback } from '../util';
 
-export default interface Interrupter extends EventEmitter {
-  emitInterrupted(): void;
+export default interface Interrupter {
+  on(eventName: string, listener: Callback): unknown;
+  off(eventName: string, listener: Callback): unknown;
 }
 
 export { Interrupter };
