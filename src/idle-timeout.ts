@@ -119,7 +119,7 @@ export default class IdleTimeout {
     this.endCb();
     this.idle = false;
     this.afterIdle();
-    this.testTimeout();
+    this.timeoutId = setTimeout(() => this.testTimeout(), this.delay);
   }
 
   protected beforeIdle(): void {
