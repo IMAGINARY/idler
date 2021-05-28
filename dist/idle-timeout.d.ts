@@ -1,11 +1,5 @@
+import { Idler } from './idler-types';
 import { Callback } from './util';
-interface Idler {
-    interrupt(): void;
-    getIdleTime(): number;
-    on(eventType: string, callback: Callback): this;
-    off(eventType: string, callback: Callback): this;
-    once(eventType: string, callback: Callback): this;
-}
 export default class IdleTimeout {
     protected idler: Idler;
     protected beginCb: Callback;
@@ -14,17 +8,22 @@ export default class IdleTimeout {
     protected duration: number;
     protected timeoutId: ReturnType<typeof setTimeout>;
     protected durationTimeoutId: ReturnType<typeof setTimeout>;
-    protected endHandler: () => void;
+    private interruptHandler;
+    private interruptHandlerInternal;
     private initialized;
     private idle;
-    constructor(idler: Idler, beginCb: Callback, delay: number, duration: number, endCb: Callback);
+    protected startIdle: boolean;
+    constructor(idler: Idler, beginCb: Callback, delay: number, duration: number, endCb: Callback, startIdle: boolean);
     init(): void;
     isInitialized(): boolean;
     clear(): void;
     isIdle(): boolean;
+    interrupt(): void;
     protected testTimeout(): void;
-    protected handleBegin(): void;
-    protected handleEnd(): void;
+    private beginIdleModeCycle;
+    private endIdleModeCycle;
+    protected beforeIdle(): void;
+    protected afterIdle(): void;
 }
 export { IdleTimeout };
 //# sourceMappingURL=idle-timeout.d.ts.map

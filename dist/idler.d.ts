@@ -1,18 +1,9 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
+import { Idler, CallbackOptions } from './idler-types';
 import { IdleTimeout } from './idle-timeout';
 import { Interrupter } from './interrupters/interrupter';
-import { Callback } from './util';
-declare type CallbackOptions = {
-    delay: number;
-    duration: number;
-    onBegin: Callback;
-    onEnd: Callback;
-    interval: number;
-    onInterval: Callback;
-    onAnimate: FrameRequestCallback;
-};
-export default class Idler extends EventEmitter {
+export default class IdlerImpl extends EventEmitter implements Idler {
     protected lastId: number;
     protected timers: Map<number, IdleTimeout>;
     protected lastEventTimestampMs: number;
@@ -31,5 +22,5 @@ export default class Idler extends EventEmitter {
     registerInterrupter(interrupter: Interrupter): this;
     unregisterInterrupter(interrupter: Interrupter): this;
 }
-export { Idler, CallbackOptions };
+export { IdlerImpl as Idler, CallbackOptions };
 //# sourceMappingURL=idler.d.ts.map

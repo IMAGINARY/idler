@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-05-28
+
 ### Added
 
 - `immediate` option for starting the first idle run immediately
@@ -39,7 +41,8 @@ This release just updates the user guide with respect to the changes introduced 
 - `PointerInterrupter` for interrupting via mouse, touch and pointer events
 - `KeyboardInterrupter` for interrupting via keyboard events
 
-[unreleased]: https://github.com/IMAGINARY/idler/compare/v0.2.1...HEAD
+[unreleased]: https://github.com/IMAGINARY/idler/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/IMAGINARY/idler/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/IMAGINARY/idler/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/IMAGINARY/idler/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/IMAGINARY/idler/compare/v0.0.0...v0.1.0

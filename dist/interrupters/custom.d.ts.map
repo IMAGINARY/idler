@@ -1,0 +1,1 @@
+{"version":3,"file":"custom.d.ts","sourceRoot":"","sources":["../../src/interrupters/custom.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,QAAQ,CAAC;AAEzC,MAAM,CAAC,OAAO,OAAO,iBAAkB,SAAQ,eAAe;gBAChD,MAAM,EAAE,CAAC,aAAa,EAAE,MAAM,IAAI,KAAK,OAAO;CAI3D;AAED,OAAO,EAAE,iBAAiB,EAAE,CAAC"}
