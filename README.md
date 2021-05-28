@@ -73,6 +73,7 @@ const callbackOptions = {
   interval: 10 * 1000, // repeat onInterval every 10s in idle mode
   onInterval: () => console.log('interval'), // called every 10s when in idle mode
   onAnimate: (ms) => console.log('animate', ms), // animate via requestAnimationFrame while in idle mode
+  immediate: true, // start the first run immediately
 };
 const cbId = myIdler.addCallback(callbackOptions);
 

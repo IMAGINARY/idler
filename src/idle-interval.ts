@@ -29,9 +29,10 @@ export default class IdleInterval extends IdleTimeout {
     duration: number,
     intervalCb: Callback,
     interval: number,
-    endCb: Callback
+    endCb: Callback,
+    startIdle: boolean
   ) {
-    super(idler, beginCb, delay, duration, endCb);
+    super(idler, beginCb, delay, duration, endCb, startIdle);
     this.intervalCb = intervalCb;
     this.interval = interval;
   }

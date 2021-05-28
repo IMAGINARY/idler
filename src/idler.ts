@@ -21,6 +21,7 @@ type CallbackOptions = {
   interval: number;
   onInterval: Callback;
   onAnimate: FrameRequestCallback;
+  immediate: boolean;
 };
 
 const defaultCallbackOptions: CallbackOptions = {
@@ -31,6 +32,7 @@ const defaultCallbackOptions: CallbackOptions = {
   interval: Number.POSITIVE_INFINITY,
   onInterval: () => {},
   onAnimate: () => {},
+  immediate: false,
 };
 
 export default class Idler extends EventEmitter {
@@ -64,6 +66,7 @@ export default class Idler extends EventEmitter {
         onInterval,
         interval,
         onEnd,
+        immediate,
       } = {
         ...defaultCallbackOptions,
         ...options,
@@ -76,7 +79,8 @@ export default class Idler extends EventEmitter {
         onAnimate,
         onInterval,
         interval,
-        onEnd
+        onEnd,
+        immediate
       );
       return this.addIdleTimeout(idleAnimation);
     }
@@ -84,7 +88,15 @@ export default class Idler extends EventEmitter {
       typeof options.interval !== 'undefined' &&
       Number.isFinite(options.interval)
     ) {
-      const { onBegin, delay, duration, onInterval, interval, onEnd } = {
+      const {
+        onBegin,
+        delay,
+        duration,
+        onInterval,
+        interval,
+        onEnd,
+        immediate,
+      } = {
         ...defaultCallbackOptions,
         ...options,
       };
@@ -95,15 +107,23 @@ export default class Idler extends EventEmitter {
         duration,
         onInterval,
         interval,
-        onEnd
+        onEnd,
+        immediate
       );
       return this.addIdleTimeout(idleInterval);
     }
-    const { onBegin, delay, duration, onEnd } = {
+    const { onBegin, delay, duration, onEnd, immediate } = {
       ...defaultCallbackOptions,
       ...options,
     };
-    const idleTimeout = new IdleTimeout(this, onBegin, delay, duration, onEnd);
+    const idleTimeout = new IdleTimeout(
+      this,
+      onBegin,
+      delay,
+      duration,
+      onEnd,
+      immediate
+    );
     return this.addIdleTimeout(idleTimeout);
   }
 

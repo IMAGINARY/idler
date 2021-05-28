@@ -37,12 +37,15 @@ export default class IdleTimeout {
 
   private idle = false;
 
+  protected startIdle: boolean;
+
   constructor(
     idler: Idler,
     beginCb: Callback,
     delay: number,
     duration: number,
-    endCb: Callback
+    endCb: Callback,
+    startIdle: boolean
   ) {
     this.idler = idler;
     this.beginCb = beginCb;
@@ -51,6 +54,7 @@ export default class IdleTimeout {
     this.endCb = typeof endCb === 'undefined' ? () => {} : endCb;
     this.timeoutId = dummyTimeoutId;
     this.durationTimeoutId = dummyTimeoutId;
+    this.startIdle = startIdle;
     this.init();
   }
 
@@ -58,7 +62,11 @@ export default class IdleTimeout {
     if (!this.initialized) {
       this.initialized = true;
       this.idle = false;
-      this.timeoutId = setTimeout(() => this.testTimeout(), 0);
+      if (this.startIdle) {
+        this.timeoutId = setTimeout(() => this.beginIdleModeCycle(), 0);
+      } else {
+        this.timeoutId = setTimeout(() => this.testTimeout(), 0);
+      }
     }
   }
 

@@ -31,9 +31,19 @@ export default class IdleAnimation extends IdleInterval {
     animationCb: FrameRequestCallback,
     intervalCb: Callback,
     interval: number,
-    endCb: Callback
+    endCb: Callback,
+    startIdle: boolean
   ) {
-    super(idler, beginCb, delay, duration, intervalCb, interval, endCb);
+    super(
+      idler,
+      beginCb,
+      delay,
+      duration,
+      intervalCb,
+      interval,
+      endCb,
+      startIdle
+    );
     this.animationCb = animationCb;
   }
 

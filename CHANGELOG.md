@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `immediate` option for starting the first idle run immediately
+
 ### Fixed
 
 - idle timeouts firing too early after idle duration is over
