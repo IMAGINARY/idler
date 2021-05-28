@@ -1,18 +1,7 @@
+import { Idler } from './idler-types';
 import { Callback } from './util';
 
 const dummyTimeoutId = setTimeout(() => {}, 0);
-
-interface Idler {
-  interrupt(): void;
-
-  getIdleTime(): number;
-
-  on(eventType: string, callback: Callback): this;
-
-  off(eventType: string, callback: Callback): this;
-
-  once(eventType: string, callback: Callback): this;
-}
 
 export default class IdleTimeout {
   protected idler: Idler;

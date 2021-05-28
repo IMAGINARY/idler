@@ -2,27 +2,16 @@
 import { performance } from 'universal-perf-hooks';
 import { EventEmitter } from 'events';
 
+import { Idler, CallbackOptions } from './idler-types';
 import { IdleTimeout } from './idle-timeout';
 import { IdleInterval } from './idle-interval';
 import { IdleAnimation } from './idle-animation';
 import { Interrupter } from './interrupters/interrupter';
-import { Callback } from './util';
 
 function now(): number {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
   return performance.now();
 }
-
-type CallbackOptions = {
-  delay: number;
-  duration: number;
-  onBegin: Callback;
-  onEnd: Callback;
-  interval: number;
-  onInterval: Callback;
-  onAnimate: FrameRequestCallback;
-  immediate: boolean;
-};
 
 const defaultCallbackOptions: CallbackOptions = {
   delay: 60 * 1000,
@@ -35,7 +24,7 @@ const defaultCallbackOptions: CallbackOptions = {
   immediate: false,
 };
 
-export default class Idler extends EventEmitter {
+export default class IdlerImpl extends EventEmitter implements Idler {
   protected lastId: number;
 
   protected timers: Map<number, IdleTimeout>;
@@ -169,4 +158,4 @@ export default class Idler extends EventEmitter {
   }
 }
 
-export { Idler, CallbackOptions };
+export { IdlerImpl as Idler, CallbackOptions };
