@@ -41,14 +41,14 @@ export default class IdleInterval extends IdleTimeout {
     super.clear();
   }
 
-  protected handleBegin(): void {
-    super.handleBegin();
+  protected beforeIdle(): void {
+    super.beforeIdle();
     this.intervalId = setInterval(this.intervalCb, this.interval);
   }
 
-  protected handleEnd(): void {
+  protected afterIdle(): void {
     clearInterval(this.intervalId);
-    super.handleEnd();
+    super.afterIdle();
   }
 }
 

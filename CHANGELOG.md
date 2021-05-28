@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- undefined behaviour when idle mode is interrupted from the `onBegin` callback
+
 ## [0.2.1] - 2021-05-27
 
 This release just updates the user guide with respect to the changes introduced in [0.2.0].

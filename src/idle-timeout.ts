@@ -29,7 +29,9 @@ export default class IdleTimeout {
 
   protected durationTimeoutId: ReturnType<typeof setTimeout>;
 
-  protected endHandler = this.handleEnd.bind(this);
+  private interruptHandler = this.interrupt.bind(this);
+
+  private interruptHandlerInternal = () => {};
 
   private initialized = false;
 
@@ -66,8 +68,8 @@ export default class IdleTimeout {
 
   clear(): void {
     if (this.initialized) {
+      this.interrupt();
       clearTimeout(this.timeoutId);
-      if (this.isIdle()) this.handleEnd();
       this.initialized = false;
     }
   }
@@ -76,11 +78,15 @@ export default class IdleTimeout {
     return this.idle;
   }
 
+  interrupt(): void {
+    this.interruptHandlerInternal();
+  }
+
   protected testTimeout(): void {
     if (this.isInitialized()) {
       const idleTime = this.idler.getIdleTime();
       if (idleTime >= this.delay) {
-        this.handleBegin();
+        this.beginIdleModeCycle();
       } else {
         const idleTimeRemaining = this.delay - idleTime;
         this.timeoutId = setTimeout(
@@ -91,23 +97,41 @@ export default class IdleTimeout {
     }
   }
 
-  protected handleBegin(): void {
+  private beginIdleModeCycle(): void {
+    let interruptedEarly = false;
+    this.interruptHandlerInternal = () => {
+      interruptedEarly = true;
+    };
+    this.idler.on('interrupted', this.interruptHandler);
+    this.beforeIdle();
     this.idle = true;
-    this.idler.on('interrupted', this.endHandler);
     this.beginCb();
+    if (interruptedEarly) {
+      this.endIdleModeCycle();
+    } else {
+      this.interruptHandlerInternal = this.endIdleModeCycle.bind(this);
+    }
+  }
+
+  private endIdleModeCycle(): void {
+    this.interruptHandlerInternal = () => {};
+    this.idler.off('interrupted', this.interruptHandler);
+    this.endCb();
+    this.idle = false;
+    this.afterIdle();
+    this.testTimeout();
+  }
+
+  protected beforeIdle(): void {
     if (Number.isFinite(this.duration) && this.duration >= 0)
       this.durationTimeoutId = setTimeout(
-        () => this.handleEnd(),
+        () => this.interrupt(),
         this.duration
       );
   }
 
-  protected handleEnd(): void {
+  protected afterIdle(): void {
     clearTimeout(this.durationTimeoutId);
-    this.idler.off('interrupted', this.endHandler);
-    this.idle = false;
-    this.endCb();
-    this.testTimeout();
   }
 }
 

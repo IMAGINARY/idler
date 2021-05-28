@@ -42,8 +42,8 @@ export default class IdleAnimation extends IdleInterval {
     super.clear();
   }
 
-  protected handleBegin(): void {
-    super.handleBegin();
+  protected beforeIdle(): void {
+    super.beforeIdle();
     this.animationFrameRequestId = requestAnimationFrame(this.animateHandler);
   }
 
@@ -52,9 +52,9 @@ export default class IdleAnimation extends IdleInterval {
     this.animationFrameRequestId = requestAnimationFrame(this.animateHandler);
   }
 
-  protected handleEnd(): void {
+  protected afterIdle(): void {
     cancelAnimationFrame(this.animationFrameRequestId);
-    super.handleEnd();
+    super.afterIdle();
   }
 }
 
