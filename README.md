@@ -8,7 +8,7 @@ about to be added. Adding custom interrupters is easy as well.
 ### NodeJS
 
 ```shell
-npm install --save
+npm install --save @imaginary-maths/idler
 ```
 
 Then, use either
