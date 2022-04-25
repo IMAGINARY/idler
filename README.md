@@ -69,7 +69,7 @@ const callbackOptions = {
   delay: 5 * 1000, // idle after not being interrupted for 5s
   duration: 60 * 1000, // not idle anymore after 1min in idle mode
   onBegin: () => console.log('begin'), // called after 5s without interruption
-  onEnd: () => console.log('begin'), // called after interrupted in idle mode
+  onEnd: () => console.log('end'), // called after interrupted in idle mode
   interval: 10 * 1000, // repeat onInterval every 10s in idle mode
   onInterval: () => console.log('interval'), // called every 10s when in idle mode
   onAnimate: (ms) => console.log('animate', ms), // animate via requestAnimationFrame while in idle mode
