@@ -6,4 +6,5 @@ export declare type EventEmitterOnOffOrEventTargetAddRemove = EventEmitterOnOff 
 export declare function hasOnOff(obj: EventEmitterOnOffOrEventTargetAddRemove): obj is EventEmitterOnOff;
 export declare function isIterable<X>(i: X | Iterable<X>): i is Iterable<X>;
 export declare type Callback = () => void;
+export declare const dayInMs: number;
 //# sourceMappingURL=util.d.ts.map
