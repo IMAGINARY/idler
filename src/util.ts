@@ -27,3 +27,5 @@ export function isIterable<X>(i: X | Iterable<X>): i is Iterable<X> {
 }
 
 export type Callback = () => void;
+
+export const dayInMs = 24 * 60 * 60 * 1000;

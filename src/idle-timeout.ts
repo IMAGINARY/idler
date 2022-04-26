@@ -1,7 +1,7 @@
 import { Idler } from './idler-types';
-import { Callback } from './util';
+import { Callback, dayInMs } from './util';
 
-const dummyTimeoutId = setTimeout(() => {}, 0);
+const dummyTimeoutId = setTimeout(() => {}, dayInMs);
 
 export default class IdleTimeout {
   protected idler: Idler;
